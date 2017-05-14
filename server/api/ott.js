@@ -24,7 +24,13 @@ Meteor.methods({
     };
     try{
       let req = Meteor.http.call('POST', ott, { data });
-      return req.data.results[0].matches[0].taxon.ott_id;
+      if (req.data.results[0].matches[0].taxon.rank !== 'species') {
+        throw new Meteor.Error('The given name isn\'t a species');
+      }
+      return { 
+        id: req.data.results[0].matches[0].taxon.ott_id,
+        unique_name: req.data.results[0].matches[0].taxon.unique_name
+      };
     } catch (e) {
       console.log('error: '+e);
       throw new Meteor.Error('Cant\'t find that species (species name: '+name+')');

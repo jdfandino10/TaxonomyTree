@@ -1,59 +1,19 @@
 import React, { Component } from 'react';
 
 import Graph from './Graph.jsx';
+import GenericMessage from './GenericMessage.jsx';
 
 const granularity = ['Life', 'Domain', 'Kingdom', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'];
-
-const mock = [{
-  id: 'o1',
-  name: 's1',
-  lineage: [
-    {
-      rank: 'family',
-      name: 'Thraupidae'
-    },
-    {
-      rank: 'order',
-      name: 'Passeriformes'
-    },
-    {
-      rank: 'class',
-      name: 'Aves'
-    },
-    {
-      rank: 'phylum',
-      name: 'Chordata'
-    }
-  ], 
-},
-{
-  id: 'o2',
-  name: 's2',
-  lineage: [
-    {
-      rank: 'family',
-      name: 'Thraupidae'
-    },
-    {
-      rank: 'order',
-      name: 'Passeriformes'
-    },
-    {
-      rank: 'class',
-      name: 'Aves'
-    },
-    {
-      rank: 'phylum',
-      name: 'Chordata'
-    }
-  ], 
-}]
 
 export default class SpeciesAdmin extends Component {
 
   constructor() {
     super();
     this.state = {
+      dialog: {
+        title: '',
+        message: '',
+      },
       species: '',
       nodes: [{id: 'Life', rank: 'Life'}],
       links: []
@@ -73,7 +33,7 @@ export default class SpeciesAdmin extends Component {
   }
 
   capFirstLetter = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   }
 
   handleSpecies = (e) => {
@@ -87,66 +47,84 @@ export default class SpeciesAdmin extends Component {
     
     lin.forEach( (elem) => {
       const r = this.capFirstLetter(elem.rank);
-        const index = granularity.indexOf(r);
-        if (!doneLevel[index]) {
-          doneLevel[index] = true;
-          newNodes.push({id: elem.name, rank: r});
-        }
-    }, this);
+      const index = granularity.indexOf(r);
+      if (index >= 0 && !doneLevel[index]) {
+        doneLevel[index] = true;
+        newNodes.push({id: elem.name, rank: r});
+      }
+    });
+
     newNodes.sort(function(a, b) {
       return granularity.indexOf(a.rank) - granularity.indexOf(b.rank);
     });
+
     for (let i = 0; i < newNodes.length - 1; i++) {
       let link = {source: newNodes[i].id, target: newNodes[i+1].id};
       newLinks.push(link);
     }
+
     let nodes = this.state.nodes.concat(newNodes);
     nodes = this.arrayUnique(nodes, function(a, b) {
-    	return a.id === b.id;
+      return a.id === b.id;
     });
+
     let links = this.state.links.concat(newLinks);
     links = this.arrayUnique(links, function(a, b) {
-    	return a.source === b.source && a.target === b.target;
+      return a.source === b.source && a.target === b.target;
     });
+
     this.setState({nodes, links});
     console.log(nodes);
     console.log(links);
   }
 
   getLineage = (name, id) => {
-    // let  lin = undefined;
-    // for (let i = 0; i < mock.length && lin === undefined; i++) {
-    //   if (mock[i].id === id) lin = mock[i].lineage;
-    // }
-    // if (lin === 0) console.log("No se ha podido encontrar linaje");
-    // else {
-    //   this.createNodes(name, lin);
-    // }
-    let lineage = Meteor.call('api.getLineageFromId', id, (error, result) => {
-    	if (error) {
-    		console.log(error);
-    	} else {
-    		this.createNodes(name, result);
-    	}
+    Meteor.call('api.getLineageFromId', id, (error, result) => {
+      if (error) {
+        this.setMessageDialog('Error', error.error);
+      } else {
+        this.createNodes(name, result);
+      }
     });
   } 
 
   getId = (name) => {
-    let ottId = Meteor.call('api.getSpeciesId', name, (error, result) => {
-    	if (error) {
-    		console.log(error);
-    	} else {
-    		console.log(result);
-    		this.getLineage(name, result);
-    	}
+    Meteor.call('api.getSpeciesId', name, (error, result) => {
+      if (error) {
+        this.setMessageDialog('Error', error.error);
+      } else {
+        let true_name = this.capFirstLetter(result.unique_name);
+        if (this.speciesAlreadyExist(true_name)) {
+          this.setMessageDialog('Error', 'The species '+name+' already exists in the tree ('+result.unique_name+').');
+        } else {
+          this.getLineage(true_name, result.id);
+        }
+      }
     });
+  }
+
+  speciesAlreadyExist = (name) => {
+    const nodes = this.state.nodes;
+    let found = false;
+    for (let i = nodes.length - 1; i >= 0 && !found; i--) {
+      console.log(nodes[i]);
+      found = nodes[i].id === name;
+    }
+    return found;
   }
 
   updateTree = (e) => {
     e.preventDefault();
-    const name = this.state.species;
-    console.log(name);
+    const name = this.capFirstLetter(this.state.species);
     this.getId(name);
+  }
+
+  resetMessageDialog = () => {
+    this.setMessageDialog('','');
+  }
+
+  setMessageDialog = (title, message) => {
+    this.setState({ dialog: { title, message } });
   }
 
   render() {
@@ -155,9 +133,14 @@ export default class SpeciesAdmin extends Component {
         <form>
           <label htmlFor="species">Enter a species:</label>
           <input type="text" name="species" value={this.state.species} onChange={this.handleSpecies}/>
-          <input type="submit" value="Submit" onClick={this.updateTree} />
+          <input type="submit" value="Search" onClick={this.updateTree} />
         </form>
         <Graph nodes={this.state.nodes} links={this.state.links} />
+        { 
+          this.state.dialog.title !== '' 
+          ? <GenericMessage title={ this.state.dialog.title } message={ this.state.dialog.message } remove={ this.resetMessageDialog }/>
+          : ''
+        }
       </div>
     );
   }
