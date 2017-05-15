@@ -15,7 +15,7 @@ export default class SpeciesAdmin extends Component {
         message: '',
       },
       species: '',
-      nodes: [{id: 'Life', rank: 'Life'}],
+      nodes: [{ id: 'Life', rank: 'Life', group: 0 }],
       links: []
     }
   }
@@ -42,7 +42,10 @@ export default class SpeciesAdmin extends Component {
 
   createNodes = (name, lin) => {
     let doneLevel = [true, false, false, false, false, false, false, false, true];
-    let newNodes = [{id: granularity[0], rank: granularity[0]}, {id: name, rank: granularity[granularity.length-1]}];
+    let newNodes = [
+      { id: granularity[0], rank: granularity[0], group: 0 },
+      { id: name, rank: granularity[granularity.length-1], group: granularity.length-1}
+    ];
     let newLinks = [];
     
     lin.forEach( (elem) => {
@@ -50,16 +53,16 @@ export default class SpeciesAdmin extends Component {
       const index = granularity.indexOf(r);
       if (index >= 0 && !doneLevel[index]) {
         doneLevel[index] = true;
-        newNodes.push({id: elem.name, rank: r});
+        newNodes.push({ id: elem.name, rank: r, group: index });
       }
     });
 
     newNodes.sort(function(a, b) {
-      return granularity.indexOf(a.rank) - granularity.indexOf(b.rank);
+      return a.group - b.group;
     });
 
     for (let i = 0; i < newNodes.length - 1; i++) {
-      let link = {source: newNodes[i].id, target: newNodes[i+1].id};
+      let link = { source: newNodes[i].id, target: newNodes[i+1].id, value: newNodes[i+1].group - newNodes[i].group };
       newLinks.push(link);
     }
 
@@ -107,7 +110,6 @@ export default class SpeciesAdmin extends Component {
     const nodes = this.state.nodes;
     let found = false;
     for (let i = nodes.length - 1; i >= 0 && !found; i--) {
-      console.log(nodes[i]);
       found = nodes[i].id === name;
     }
     return found;
