@@ -3,8 +3,8 @@
 export default class d3graph {
 
   constructor(el, graph) {
-    const width = 500;
-    const height = 500;
+    const width = 800;
+    const height = 800;
     this.svg =  d3.select(el).append('svg')
       .attr('class', 'd3')
       .attr('width', width)
@@ -17,11 +17,14 @@ export default class d3graph {
 
     this.linkForce = d3.forceLink()
       .id((link) => { return link.id; })
-      .strength((link) => { return link.value; });
+      .strength((link) => { return link.value; })
+      .distance(20);
+
+
 
     this.simulation = d3.forceSimulation()
       .force('link', this.linkForce)
-      .force('charge', d3.forceManyBody())
+      .force('charge', d3.forceManyBody().strength(-100))
       .force('center', d3.forceCenter(width / 2, height / 2));
 
     this.dragDrop = d3.drag().on('start', (node) => {
@@ -85,15 +88,17 @@ export default class d3graph {
     this.updateGraph(graph);
 
     this.simulation.nodes(graph.nodes).on('tick', () => {
+      let k = 25 * this.simulation.alpha();
       this.nodeElements.attr('cx', (node) => { return node.x; }).attr('cy', (node) => { return node.y; });
       this.textElements.attr('x', (node) => { return node.x; }).attr('y', (node) => { return node.y; });
+
+      graph.links.forEach((link) => { link.source.y -= k, link.target.y += k; });
       this.linkElements
         .attr('x1', (link) => { return link.source.x; })
         .attr('y1', (link) => { return link.source.y; })
         .attr('x2', (link) => { return link.target.x; })
         .attr('y2', (link) => { return link.target.y; });
     });
-
     this.simulation.force('link').links(graph.links);
     this.simulation.restart();
   }
@@ -137,7 +142,7 @@ d3graph.update = function(el, graph) {
 
   node.append('h1')
     .text((d) => { return d.id; });
-  
+
   node.append('title')
     .text((d) => { return d.rank; });
 
