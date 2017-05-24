@@ -76,8 +76,11 @@ export default class SpeciesAdmin extends Component {
     let links = this.state.links.concat(newLinks);
     console.log(links);
     links = this.arrayUnique(links, function(a, b) {
-      return (a.source.id === b.source.id && a.target.id === b.target.id)
-            ||(a.source === b.source && a.target === b.target);
+      let idSourceA = a.source.id || a.source;
+      let idSourceB = b.source.id || b.source;
+      let idTargetA = a.target.id || a.target;
+      let idTargetB = b.target.id || b.target;
+      return (idSourceA === idSourceB && idTargetA === idTargetB);
     });
 
     this.setState({nodes, links});
