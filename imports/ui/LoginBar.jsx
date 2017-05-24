@@ -17,9 +17,9 @@ export default class LoginBar extends Component {
 
 	showAbout = () => {
 		let title = "About";
-		let message = "On this webpage you can create any animal tree given the species." +
-					"Also, you can visualize information about the species on your tree." +
-					"Create a user to be able to save your creations!";
+		let message = "On this webpage you can create any animal tree given the species. " +
+					"Also, you can visualize information about the species on your tree. " +
+					"Create a user to be able to save and load your creations!";
 		let dialog = { title, message };
 		this.setState({dialog});
 	}
@@ -37,13 +37,11 @@ export default class LoginBar extends Component {
 	                  <h1 id="logo-name" className="logo" >Taxonomy Tree</h1>
 	                </div>
 	                <div className="hidden-sm hidden-md hidden-lg hidden-xl">
-	                  <h1 id="logo-name" className="logo" >TT</h1>
+	                  <h1 id="logo-name" className="logo" >TaxTree</h1>
 	                </div>
 	            </div>
-	            <div className="col-sm-3 col-xs-4">
-	              <button className="btn options" onClick={this.showAbout}>About</button>
-	            </div>
-	            <div className="col-sm-3 col-xs-4">
+	            <div className="col-sm-5 col-xs-8 float-right">
+	              <button className="btn options about" onClick={this.showAbout}>About</button>
 	              <AccountsUIWrapper />
 	            </div>
 	          </div>

@@ -2,17 +2,9 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
-export const Graphs = new Mongo.Collection('graphs');
-export default Graphs;
 
 const ott = 'https://api.opentreeoflife.org/v3/tnrs/match_names';
 const lineage = 'https://api.opentreeoflife.org/v3/taxonomy/taxon_info';
-Meteor.publish('graphs', function graphPublication() {
-  return Graphs.find({ $or: [
-    { 'owner': { $eq: this.userId } },
-    { 'p': { $ne: true } }
-  ]});
-});
 
 // acá conexiones con apis
 Meteor.methods({

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Graph from './Graph.jsx';
 import GenericMessage from './GenericMessage.jsx';
+import SaveLoadModal from './SaveLoadModal.jsx';
 import SpeciesInfo from './SpeciesInfo.jsx';
 
 const granularity = ['Life', 'Domain', 'Kingdom', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'];
@@ -15,7 +16,11 @@ export default class SpeciesAdmin extends Component {
         title: '',
         message: '',
       },
+      saving: false,
+      loading: false,
       species: '',
+      graphId: '',
+      name: '',
       nodes: [{ id: 'Life', rank: 'Life', group: 0 }],
       links: [],
       display: ''
@@ -161,28 +166,124 @@ export default class SpeciesAdmin extends Component {
     this.setState({ display: species });
   }
 
+  save = () => {
+    
+  }
+
+  load = () => {
+
+  }
+
+  noUserMessage = () => {
+    return (
+      <div className="row no-user-info">
+        <i>For being able to save and load, please <a>login or sign up</a>.</i>
+      </div>
+    );
+  }
+
+  newGraph = () => {
+    this.setMessageDialog('New graph', 'Are your sure you want to reset the to a new graph? Any unsaved changes will be lost.');
+  }
+
+  saveAndLoadDiv = () => {
+    return (
+      <div className="row">
+        <div className="col-xs-12">
+          <button className="btn options float-right" onClick={this.showSave}> Save </button>
+          <button className="btn options float-right" onClick={this.showLoad}> Load </button>
+          <button className="btn options float-right" onClick={this.newGraph}> New </button>
+        </div>
+      </div>
+    );
+  }
+
+  showSave = () => {
+    this.setState({saving: true});
+  }
+
+  showLoad = () => {
+    this.setState({loading: true});
+  }
+
+  hideSaveLoad = () => {
+    this.setState({saving: false, loading: false});
+  }
+
+  getGraph = () => {
+    let graph = { graphId: this.state.graphId, name: this.state.name, nodes: this.state.nodes, links: this.state.links };
+    return graph;
+  }
+
+  handleSaveLoad = (save, params) => {
+    /* do something */
+    if (save === 's') {
+      let name = params[0];
+      let overwrite = params[1];
+      let nodes = this.state.nodes;
+      let links = this.state.links;
+      let graphId = this.state.graphId;
+      if (!overwrite) {
+        Meteor.call('graphs.newGraph', name, nodes, links, (err, result) => {
+          console.log(result);
+          if (err) this.setMessageDialog('Error', err.message);
+          else this.setState({ name: name, graphId: result });
+        });
+      }
+      else {
+        Meteor.call('graphs.updateGraph', graphId, name, nodes, links, (err, result) => {
+          if (err) this.setMessageDialog('Error', err.message);
+          else this.setState({ name: name });
+        });
+      } 
+    } else {
+
+
+
+    }
+    this.hideSaveLoad();
+  }
+
+  resetGraph = () => {
+    this.setState({nodes: [{ id: 'Life', rank: 'Life', group: 0 }], links: [], name: '', graphId: ''});
+    this.resetMessageDialog();
+  }
+
   render() {
     return (
       <div>
-        <div className="row query">
-          <form>
-            <label htmlFor="species">Enter a species:</label>
-            <input type="text" name="species" value={this.state.species} onChange={this.handleSpecies}/>
-            <input type="submit" value="Search" className="btn options" onClick={this.updateTree} />
-          </form>
-        </div>
-        <div className="row">  
+        <div className="row main-content">  
           <div className="col-sm-6 col-xs-12 graph-side">
+            <div className="row query">
+              <form>
+                <label htmlFor="species">Enter a species:</label>
+                <input type="text" name="species" value={this.state.species} onChange={this.handleSpecies}/>
+                <input type="submit" value="Search" className="btn options" onClick={this.updateTree} />
+              </form>
+            </div>
             <Graph nodes={this.state.nodes} links={this.state.links} speciesCallback={this.setSpeciesToDisplay} />
           </div>
-          <div className="col-sm-6 col-xs-12 species-side">
-            <SpeciesInfo species={this.state.display} deleteSpecies={this.deleteSpecies}/>
+          <div className="row col-sm-6 col-xs-12">
+            {
+                this.props.currentUser ? this.saveAndLoadDiv() : this.noUserMessage()
+            }
+            <div className="species-side">
+              <SpeciesInfo species={this.state.display} deleteSpecies={this.deleteSpecies}/>
+            </div>
           </div>
         </div>
         { 
           this.state.dialog.title !== '' 
-          ? <GenericMessage title={ this.state.dialog.title } message={ this.state.dialog.message } remove={ this.resetMessageDialog }/>
+          ? (this.state.dialog.title === 'New graph' 
+            ? <GenericMessage title={ this.state.dialog.title } message={ this.state.dialog.message } remove={ this.resetGraph } cancel={ this.resetMessageDialog } showCancel={true}/>
+            : <GenericMessage title={ this.state.dialog.title } message={ this.state.dialog.message } remove={ this.resetMessageDialog }/>)
           : ''
+        }
+        {
+          this.state.saving || this.state.loading ?
+          <SaveLoadModal save={this.state.saving}
+          graph={this.getGraph()} myGraphs={this.props.graphs}
+          cancel={this.hideSaveLoad} remove={this.handleSaveLoad}/> : ''
         }
       </div>
     );

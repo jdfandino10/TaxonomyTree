@@ -21,15 +21,15 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'graphs.newGraph': function newGraph(name, ownerId, nodes, links) {
+  'graphs.newGraph': function newGraph(name, nodes, links) {
+    console.log('se llamó al new graph');
     check(name, String);
-    check(ownerId, String);
     check(nodes, Array);
     check(links, Array);
-    const owner = ownerId;
+    const owner = this.userId;
     const dateCreated = new Date();
     const graph = { owner, nodes, links, dateCreated, name };
-    Graphs.insert(graph);
+    return Graphs.insert(graph);
   },
   'graphs.updateGraph': function updateGraph(graphId, name, nodes, links) {
     check(graphId, String);

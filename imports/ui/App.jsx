@@ -11,7 +11,7 @@ class App extends Component {
 		return (
 			<div className="container">
 				<LoginBar />
-				<SpeciesAdmin />
+				<SpeciesAdmin graphs={this.props.graphs} currentUser={this.props.currentUser}/>
 			</div>
 		);
 	}

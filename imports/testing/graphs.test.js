@@ -19,10 +19,10 @@ if (Meteor.isServer) {
       resetDatabase();
     });
 
-    function create(name, ownerId, nodes, links) {
+    function create(name, nodes, links) {
       const createGraph = Meteor.server.method_handlers['graphs.newGraph'];
       const invocation = { userId, username };
-      createGraph.apply(invocation, [name, ownerId, nodes, links]);
+      createGraph.apply(invocation, [name, nodes, links]);
     }
 
     function update(graphId, name, nodes, links) {
@@ -38,7 +38,7 @@ if (Meteor.isServer) {
     }
 
     it('can create a graph', function () {
-      create('test_graph', userId, [{ id: 'Life', rank: 'Life', group: 0 }], []);
+      create('test_graph', [{ id: 'Life', rank: 'Life', group: 0 }], []);
       assert.equal(Graphs.find({ $and: [
         { name: 'test_graph' },
         { owner: userId },
@@ -48,7 +48,7 @@ if (Meteor.isServer) {
     });
 
     it('can update a graph', function () {
-      create('test_graph', userId, [{ id: 'Life', rank: 'Life', group: 0 }], []);
+      create('test_graph', [{ id: 'Life', rank: 'Life', group: 0 }], []);
       let id = Graphs.find({ owner: userId }).fetch()[0]._id;
       update(id, 'new_name', [], []);
       assert.equal(Graphs.find({ $and: [
@@ -60,7 +60,7 @@ if (Meteor.isServer) {
     });
 
     it('can delete a graph', function () {
-      create('test_graph', userId, [{ id: 'Life', rank: 'Life', group: 0 }], []);
+      create('test_graph', [{ id: 'Life', rank: 'Life', group: 0 }], []);
       let id = Graphs.find({ owner: userId }).fetch()[0]._id;
       deleteGraph(id);
       const g = Graphs.find({ owner: userId});
