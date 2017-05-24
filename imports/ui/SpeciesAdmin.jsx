@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Graph from './Graph.jsx';
 import GenericMessage from './GenericMessage.jsx';
+import SpeciesInfo from './SpeciesInfo.jsx';
 
 const granularity = ['Life', 'Domain', 'Kingdom', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'];
 
@@ -77,8 +78,6 @@ export default class SpeciesAdmin extends Component {
     });
 
     this.setState({nodes, links});
-    console.log(nodes);
-    console.log(links);
   }
 
   getLineage = (name, id) => {
@@ -132,12 +131,21 @@ export default class SpeciesAdmin extends Component {
   render() {
     return (
       <div>
-        <form>
-          <label htmlFor="species">Enter a species:</label>
-          <input type="text" name="species" value={this.state.species} onChange={this.handleSpecies}/>
-          <input type="submit" value="Search" onClick={this.updateTree} />
-        </form>
-        <Graph nodes={this.state.nodes} links={this.state.links} />
+        <div className="row query">
+          <form>
+            <label htmlFor="species">Enter a species:</label>
+            <input type="text" name="species" value={this.state.species} onChange={this.handleSpecies}/>
+            <input type="submit" value="Search" className="btn options" onClick={this.updateTree} />
+          </form>
+        </div>
+        <div className="row">  
+          <div className="col-sm-6 col-xs-12 graph-side">
+            <Graph nodes={this.state.nodes} links={this.state.links} />
+          </div>
+          <div className="col-sm-6 col-xs-12 species-side">
+            <SpeciesInfo />
+          </div>
+        </div>
         { 
           this.state.dialog.title !== '' 
           ? <GenericMessage title={ this.state.dialog.title } message={ this.state.dialog.message } remove={ this.resetMessageDialog }/>

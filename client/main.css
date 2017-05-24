@@ -1,4 +1,46 @@
 /* CSS declarations go here */
+:root {
+  /*
+  --green-main: #98df8a;
+  --green-1: #86ECBC;
+  --green-2: #8CF6A1;
+  --green-3: #C9F68C;
+  --green-4: #EAEC86;
+  --brown: #636339;
+  */
+  --green-main: #9CD117;
+  --green-1: #E1FECD;
+  --green-2: #D0F7B5;
+  --green-3: #409B00;
+  --green-4: #3B8F00;
+  --yellow-main: #E9EC86;
+  --yellow-1: #FEFFCE;
+  --yellow-2: #FDFFBA;
+  --yellow-3: #ABAF00;
+  --yellow-4: #9DA100;
+  --brown-main: #EDD587;
+  --brown-1: #FFF3CE;
+  --brown-2: #FFEFBB;
+  --brown-3: #B08500;
+  --brown-4: #A27B00;
+}
+
+body {
+  padding: 10px;
+}
+
+
+h1, h2, h3, h4, h5, h6, label {
+  font-family: Francois One;
+  font-weight: bolder;
+  color: var(--brown-4);
+  margin-top: 0;
+}
+
+h1.logo {
+  color: white;
+}
+
 .fixed-container {
   position: fixed;
   width: 100%;
@@ -16,13 +58,14 @@
 }
 
 .message-container {
-  background-color: #F7F7F7;
-  box-shadow: 0px 0px 15px #9FEDED;
+  background-color: var(--yellow-main);
+  box-shadow: 0px 0px 15px var(--yellow-3);
   padding: 20px;
   width: 40rem;
   margin: 0 auto;
   z-index: 10;
   border-radius: 10px;
+  color: var(--brown-4);
 }
 
 .modal-overlay {
@@ -43,4 +86,71 @@
 .nodes circle {
   stroke: #fff;
   stroke-width: 1.5px;
+}
+
+#login-sign-in-link, #login-name-link, button.options, input.options {
+  text-decoration: none !important;
+  font-family: Francois One;
+  color: white;
+  border: 2px solid white;
+  padding: 5px 35px;
+  border-radius: 5px;
+  background-color: var(--green-3);
+}
+
+.login-button:hover, #login-sign-in-link:hover, #login-name-link:hover, button.options:hover, input.options:hover, .login-button:focus, #login-sign-in-link:focus, #login-name-link:focus, button.options:focus, input.options:focus {
+  background-color: var(--green-main) !important;
+  color:white;
+}
+
+a.login-close-text {
+  float: right !important;
+  font-family: Francois One;
+}
+
+#login-buttons {
+  margin-top: 15px;
+}
+
+#login-buttons * {
+  font-family: Oswald;
+}
+
+#login-dropdown-list {
+  position: absolute;
+  top: 32vh;
+  left: -46vw;
+  background-color: var(--yellow-main);
+  border-radius: 0;
+  border: 1px solid var(--green-3);
+  box-shadow: 0px 0px 15px var(--yellow-main);
+  z-index: 10;
+}
+
+#login-dropdown-list a {
+  font-family: Francois One;
+}
+
+#login-dropdown-list input {
+  border: 1px solid white !important;
+}
+
+
+nav {
+  background-color: var(--green-3);
+  color: white;
+  padding: 25px;
+  border-radius: 10px;
+  margin: 10px 0px;
+}
+
+input[type=text] {
+  border-radius: 5px;
+  border: solid 1px var(--brown-4);
+  margin-left: 10px;
+  padding: 0 5px;
+}
+
+.species-side {
+  border-left: solid 1px var(--green-3);
 }
