@@ -128,6 +128,27 @@ export default class SpeciesAdmin extends Component {
     this.setState({ dialog: { title, message } });
   }
 
+  deleteSpecies = (speciesId) => {
+    let target = [{ source: { id: speciesId } }];
+    let idsToDelete = [];
+    while (target[0] && this.state.links.filter((link) => { return link.source.id === target[0].source.id }).length <= 1
+           && target[0].source.id !== 'Life') {
+      idsToDelete.push(target[0].source.id);
+      source = this.state.links.filter((link) => { return link.target.id === target[0].source.id });
+      target = source;
+    }
+    this.deleteNodesById(idsToDelete);
+  }
+
+  deleteNodesById = (idArray) => {
+    console.log('va a borrar '+idArray);
+    this.setState({
+                    nodes: this.state.nodes.filter((node) => { return !idArray.includes(node.id) }),
+                    links: this.state.links.filter((link) => { return !idArray.includes(link.target.id) })
+                  });
+    console.log('nuevos links: ' + this.state.links);
+  }
+
   render() {
     return (
       <div>
@@ -151,6 +172,7 @@ export default class SpeciesAdmin extends Component {
           ? <GenericMessage title={ this.state.dialog.title } message={ this.state.dialog.message } remove={ this.resetMessageDialog }/>
           : ''
         }
+        <button onClick={() => {this.deleteSpecies("Canis lupus")}} >Test borrar </button>
       </div>
     );
   }

@@ -9,8 +9,6 @@ export default class d3graph {
       .attr('class', 'd3')
       .attr('width', width)
       .attr('height', height);
-    console.log(this.svg);
-    console.log(el);
     this.linkGroup = this.svg.append('g').attr('class', 'links');
     this.nodeGroup = this.svg.append('g').attr('class', 'nodes');
     this.textGroup = this.svg.append('g').attr('class', 'texts');
@@ -84,7 +82,6 @@ export default class d3graph {
   }
 
   updateSimulation = (graph) => {
-    console.log(graph);
     this.updateGraph(graph);
 
     this.simulation.nodes(graph.nodes).on('tick', () => {

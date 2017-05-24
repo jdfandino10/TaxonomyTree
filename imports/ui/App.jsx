@@ -19,7 +19,6 @@ class App extends Component {
 
 export default createContainer(() => {
 	Meteor.subscribe('graphs');
-	console.log(Meteor);
 	return {
 		graphs: Graphs.find({}, { sort: { dateCreated: -1 } }).fetch(),
 		currentUser: Meteor.user()

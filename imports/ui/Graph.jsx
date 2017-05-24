@@ -12,7 +12,6 @@ export default class Graph extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log(this.graph);
   	// let graph = this.copyPropsGraph();
     let graph = { nodes: this.props.nodes, links: this.props.links };
   	this.graph.updateSimulation(graph);

@@ -16,7 +16,6 @@ export default class LoginBar extends Component {
 	}
 
 	showAbout = () => {
-		console.log("clicked");
 		let title = "About";
 		let message = "On this webpage you can create any animal tree given the species." +
 					"Also, you can visualize information about the species on your tree." +
