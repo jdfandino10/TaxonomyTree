@@ -17,7 +17,8 @@ export default class SpeciesAdmin extends Component {
       },
       species: '',
       nodes: [{ id: 'Life', rank: 'Life', group: 0 }],
-      links: []
+      links: [],
+      display: ''
     }
   }
 
@@ -73,8 +74,10 @@ export default class SpeciesAdmin extends Component {
     });
 
     let links = this.state.links.concat(newLinks);
+    console.log(links);
     links = this.arrayUnique(links, function(a, b) {
-      return a.source === b.source && a.target === b.target;
+      return (a.source.id === b.source.id && a.target.id === b.target.id)
+            ||(a.source === b.source && a.target === b.target);
     });
 
     this.setState({nodes, links});
@@ -138,6 +141,7 @@ export default class SpeciesAdmin extends Component {
       target = source;
     }
     this.deleteNodesById(idsToDelete);
+    this.setState({display: ''});
   }
 
   deleteNodesById = (idArray) => {
@@ -147,6 +151,11 @@ export default class SpeciesAdmin extends Component {
                     links: this.state.links.filter((link) => { return !idArray.includes(link.target.id) })
                   });
     console.log('nuevos links: ' + this.state.links);
+  }
+
+  setSpeciesToDisplay = (species) => {
+    console.log('set species llamado');
+    this.setState({ display: species });
   }
 
   render() {
@@ -161,10 +170,10 @@ export default class SpeciesAdmin extends Component {
         </div>
         <div className="row">  
           <div className="col-sm-6 col-xs-12 graph-side">
-            <Graph nodes={this.state.nodes} links={this.state.links} />
+            <Graph nodes={this.state.nodes} links={this.state.links} speciesCallback={this.setSpeciesToDisplay} />
           </div>
           <div className="col-sm-6 col-xs-12 species-side">
-            <SpeciesInfo />
+            <SpeciesInfo species={this.state.display} deleteSpecies={this.deleteSpecies}/>
           </div>
         </div>
         { 
@@ -172,7 +181,6 @@ export default class SpeciesAdmin extends Component {
           ? <GenericMessage title={ this.state.dialog.title } message={ this.state.dialog.message } remove={ this.resetMessageDialog }/>
           : ''
         }
-        <button onClick={() => {this.deleteSpecies("Canis lupus")}} >Test borrar </button>
       </div>
     );
   }

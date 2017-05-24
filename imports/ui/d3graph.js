@@ -2,7 +2,7 @@
 // basado en https://github.com/ninjaconcept/d3-force-directed-graph/blob/master/code/index.js
 export default class d3graph {
 
-  constructor(el, graph) {
+  constructor(el, graph, speciesCallback) {
     const width = 300;
     const height = 800;
     this.svg =  d3.select(el).append('svg')
@@ -43,6 +43,7 @@ export default class d3graph {
     this.color = d3.scaleOrdinal(d3.schemeCategory20);
 
     this.updateSimulation(graph);
+    this.speciesCallback = speciesCallback;
   }
 
   updateGraph = (graph) => {
@@ -73,7 +74,7 @@ export default class d3graph {
     const textEnter = this.textElements.enter()
       .append('text')
       .text((node) => { return node.id; })
-      .attr('font-size', 15)
+      .attr('font-size', 8)
       .attr('dx', 15)
       .attr('dy', 4);
 
@@ -88,13 +89,20 @@ export default class d3graph {
       let k = 25 * this.simulation.alpha();
       this.nodeElements.attr('cx', (node) => { return node.x; }).attr('cy', (node) => { return node.y; });
       this.textElements.attr('x', (node) => { return node.x; }).attr('y', (node) => { return node.y; });
+      this.nodeElements.on('click', (node) => {
 
+        if (node.rank === 'Species' && this.speciesCallback) {
+          console.log('click on species');
+          this.speciesCallback(node.id);
+        }
+      });
       graph.links.forEach((link) => { link.source.y -= k, link.target.y += k; });
       this.linkElements
         .attr('x1', (link) => { return link.source.x; })
         .attr('y1', (link) => { return link.source.y; })
         .attr('x2', (link) => { return link.target.x; })
         .attr('y2', (link) => { return link.target.y; });
+
     });
     this.simulation.force('link').links(graph.links);
     this.simulation.restart();

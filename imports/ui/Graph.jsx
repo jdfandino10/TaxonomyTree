@@ -8,7 +8,7 @@ export default class Graph extends Component {
   	let el = this.graphComponent;
   	// let graph = this.copyPropsGraph();
     let graph = { nodes: this.props.nodes, links: this.props.links };
-    this.graph = new d3graph(el, graph);
+    this.graph = new d3graph(el, graph, this.speciesCallback);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -23,6 +23,11 @@ export default class Graph extends Component {
 
   componentWillUnmount() {
   	// d3graph.destroy();
+  }
+
+  speciesCallback = (species) => {
+    console.log('va a llamar set species con: ' + species);
+    this.props.speciesCallback(species);
   }
 
   render() {

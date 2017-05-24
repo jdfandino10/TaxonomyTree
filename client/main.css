@@ -154,3 +154,8 @@ input[type=text] {
 .species-side {
   border-left: solid 1px var(--green-3);
 }
+
+circle:hover {
+  cursor: pointer;
+  cursor: hand;
+}
