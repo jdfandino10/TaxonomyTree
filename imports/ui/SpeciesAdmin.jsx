@@ -237,11 +237,19 @@ export default class SpeciesAdmin extends Component {
         });
       } 
     } else {
-
-
-
+      let selected = params[0];
+      let graphId = selected.id;
+      let name = selected.name;
+      Meteor.call('graphs.getGraph', graphId, (err, result) => {
+          if (err) this.setMessageDialog('Error', err.message);
+          else this.setState({ name: name, graphId: graphId, nodes: result.nodes, links: this.formatLinks(result.links) });
+      });
     }
     this.hideSaveLoad();
+  }
+
+  formatLinks = (links) => {
+    return links.map((link) => { return { source: link.source.id, target: link.target.id, value: link.value }; });
   }
 
   resetGraph = () => {

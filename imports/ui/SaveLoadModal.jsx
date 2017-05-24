@@ -7,8 +7,20 @@ export default class SaveLoadModal extends Component {
     this.state = {
       title: this.props.save ? 'Save' : 'Load',
       name: '',
-      overwrite: false
+      overwrite: false,
+      selected: {
+        id: '',
+        name: ''
+      }
     }
+  }
+
+  setSelected = (g) => {
+    selected = {
+      id: g._id,
+      name: g.name
+    }
+    this.setState({selected});
   }
 
   componentDidMount() {
@@ -21,7 +33,7 @@ export default class SaveLoadModal extends Component {
     if (this.props.save) {
       this.props.remove('s', [this.state.name, this.state.overwrite]);
     } else {
-      this.props.remove('l', []);
+      this.props.remove('l', [this.state.selected]);
     }
   }
 
@@ -61,7 +73,11 @@ export default class SaveLoadModal extends Component {
     if (ev.stopPropagation) ev.stopPropagation();
   }
 
-  generateLoad() {
+  componentDidMount() {
+    if (this.props.myGraphs.length > 0) this.setSelected(this.props.myGraphs[0]);
+  }
+
+  generateLoad = () => {
     console.log(this.props.myGraphs);
     return (
       <div className="overflow-load">{this.props.myGraphs.length > 0 ? this.props.myGraphs.map((g) => {
@@ -70,7 +86,8 @@ export default class SaveLoadModal extends Component {
         let dateStr = date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
         dateStr += ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
         return (
-          <div key={g._id}>
+          <div key={g._id} className={'load-item ' + (this.state.selected.id === g._id ? 'selected':'')}
+               onClick={() => {this.setSelected(g)}}>
             <h4>{g.name}</h4>
             <label>Date created: </label><p>{dateStr}</p>
           </div>
