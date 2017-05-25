@@ -1,10 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
-
+import inatjs from "inaturalistjs";
 
 const ott = 'https://api.opentreeoflife.org/v3/tnrs/match_names';
 const lineage = 'https://api.opentreeoflife.org/v3/taxonomy/taxon_info';
+const observations = 'http://naturalista.biodiversidad.co/observations.json';
+const taxa_stats = 'http://naturalista.biodiversidad.co/observations/taxon_stats.json'
+inatjs.setConfig({ apiHost: "api.inaturalist.org/v1", writeApiHost: "api.inaturalist.org/v1" });
 
 // acá conexiones con apis
 Meteor.methods({
@@ -19,7 +22,7 @@ Meteor.methods({
       if (req.data.results[0].matches[0].taxon.rank !== 'species') {
         throw new Meteor.Error('The given name isn\'t a species');
       }
-      return { 
+      return {
         id: req.data.results[0].matches[0].taxon.ott_id,
         unique_name: req.data.results[0].matches[0].taxon.unique_name
       };
@@ -44,7 +47,24 @@ Meteor.methods({
 	},
 	'api.getSpeciesInfo': function getSpeciesInfo(name) {
 		check(name, String);
-		// TODO
+    try{
+      let obs = Meteor.http.call('GET', observations+'?taxon_name='+name+'&has[]=geo&has[]=photo');
+      let info_taxa = Meteor.http.call('GET', taxa_stats+'?taxon_name='+name+'&d1=2017&d2=2000');
+      let information = {observations: obs.data, taxa_stats: info_taxa.data};
+      return information;
+    } catch (e) {
+      console.log('error: '+e);
+      throw new Meteor.Error('Error retriving information of the species (species id: '+name+')');
+    }
+  //  const query = { taxon_name: species };
+  //  console.log(query);
+  // return inatjs.observations.search(query).then( rsp => {
+  //     console.log(rsp);
+  //     return rsp;
+  //   }).catch( e => {
+  //     console.log( "Search failed:", e );
+  //     throw new Meteor.Error('Search of information failed (species name: '+name+')');
+  //   });;
 	},
-	
+
 });

@@ -54,7 +54,7 @@ export default class SpeciesAdmin extends Component {
       { id: name, rank: granularity[granularity.length-1], group: granularity.length-1}
     ];
     let newLinks = [];
-    
+
     lin.forEach( (elem) => {
       const r = this.capFirstLetter(elem.rank);
       const index = granularity.indexOf(r);
@@ -98,7 +98,7 @@ export default class SpeciesAdmin extends Component {
         this.createNodes(name, result);
       }
     });
-  } 
+  }
 
   getId = (name) => {
     Meteor.call('api.getSpeciesId', name, (error, result) => {
@@ -159,11 +159,19 @@ export default class SpeciesAdmin extends Component {
   }
 
   setSpeciesToDisplay = (species) => {
-    this.setState({ display: species });
+    console.log('set species llamado');
+    let specieInfo = Meteor.call("api.getSpeciesInfo", species, (error, result) => {
+      if (error) {
+        this.setMessageDialog('Error', error.error);
+        this.setState({ display: ''});
+      } else {
+        this.setState({ display: { species: species, info: result } });
+      }
+    });
   }
 
   save = () => {
-    
+
   }
 
   load = () => {
@@ -235,7 +243,7 @@ export default class SpeciesAdmin extends Component {
           if (err) this.setMessageDialog('Error', err.message);
           else this.setState({ name: name, graphId: graphId });
         });
-      } 
+      }
     } else {
       let selected = params[0];
       let graphId = selected.id;
@@ -268,7 +276,7 @@ export default class SpeciesAdmin extends Component {
     return (
       <div>
         <div className="row main-content">  
-          <div className="col-sm-8 col-xs-12 graph-side">
+          <div className="col-sm-7 col-xs-12 graph-side">
             <div className="row query">
               <form>
                 <label htmlFor="species">Enter a species:</label>
@@ -283,7 +291,7 @@ export default class SpeciesAdmin extends Component {
               <Graph nodes={this.state.nodes} links={this.state.links} speciesCallback={this.setSpeciesToDisplay} />
             </div>
           </div>
-          <div className="row col-sm-4 col-xs-12">
+          <div className="row col-sm-5 col-xs-12">
             {
                 this.props.currentUser ? this.saveAndLoadDiv() : this.noUserMessage()
             }
