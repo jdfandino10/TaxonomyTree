@@ -5,8 +5,8 @@ import inatjs from "inaturalistjs";
 
 const ott = 'https://api.opentreeoflife.org/v3/tnrs/match_names';
 const lineage = 'https://api.opentreeoflife.org/v3/taxonomy/taxon_info';
-const observations = 'http://naturalista.biodiversidad.co/observations.json';
-const taxa_stats = 'http://naturalista.biodiversidad.co/observations/taxon_stats.json'
+const observations = 'http://www.inaturalist.org/observations.json';
+const taxa_stats = 'http://www.inaturalist.org/observations/taxon_stats.json'
 inatjs.setConfig({ apiHost: "api.inaturalist.org/v1", writeApiHost: "api.inaturalist.org/v1" });
 
 // acá conexiones con apis
