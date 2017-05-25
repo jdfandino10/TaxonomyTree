@@ -78,18 +78,23 @@ export default class SaveLoadModal extends Component {
   }
 
   generateLoad = () => {
-    console.log(this.props.myGraphs);
     return (
       <div className="overflow-load">{this.props.myGraphs.length > 0 ? this.props.myGraphs.map((g) => {
-        console.log(g);
         let date = g.dateCreated;
         let dateStr = date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
-        dateStr += ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+        let hours = date.getHours() < 10 ? '0'+date.getHours() : date.getHours();
+        let minutes = date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes();
+        let seconds = date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds();
+        dateStr += ' ' + hours + ':' + minutes + ':' + seconds;
         return (
-          <div key={g._id} className={'load-item ' + (this.state.selected.id === g._id ? 'selected':'')}
+          <div key={g._id} className={'row load-item ' + (this.state.selected.id === g._id ? 'selected':'')}
                onClick={() => {this.setSelected(g)}}>
-            <h4>{g.name}</h4>
-            <label>Date created: </label><p>{dateStr}</p>
+            <div className="col-xs-6">
+              <h4>{g.name}</h4>
+            </div>
+            <div className="col-xs-6">
+              <label>Last modified: </label><p>{dateStr}</p>
+            </div>
           </div>
         );
       })

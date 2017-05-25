@@ -3,8 +3,9 @@
 export default class d3graph {
 
   constructor(el, graph, speciesCallback) {
-    const width = 300;
-    const height = 800;
+    console.log(el);
+    const width = el.getBoundingClientRect().width;
+    const height = el.getBoundingClientRect().width;
     this.svg =  d3.select(el).append('svg')
       .attr('class', 'd3')
       .attr('width', width)
@@ -23,7 +24,7 @@ export default class d3graph {
     this.simulation = d3.forceSimulation()
       .force('link', this.linkForce)
       .force('charge', d3.forceManyBody().strength(-100))
-      .force('center', d3.forceCenter(width / 2, height / 3));
+      .force('center', d3.forceCenter(width / 2, 2*height / 5));
 
     this.dragDrop = d3.drag().on('start', (node) => {
       node.fx = node.x;
@@ -74,7 +75,7 @@ export default class d3graph {
     const textEnter = this.textElements.enter()
       .append('text')
       .text((node) => { return node.id; })
-      .attr('font-size', 8)
+      .attr('font-size', 10)
       .attr('dx', 15)
       .attr('dy', 4);
 

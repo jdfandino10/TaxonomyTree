@@ -185,7 +185,7 @@ button.float-right {
   margin-bottom: 10px;
 }
 
-.load-item h4, .load-item label {
+.load-item p, .load-item label, .load-item h4 {
   display: inline;
   color: white;
 }
@@ -194,13 +194,36 @@ button.float-right {
   background-color: var(--green-3);
   border-radius: 10px;
   color: white;
+  margin: 10px;
+  padding: 10px;
 }
 
 .load-item.selected, .load-item:hover {
   background-color: var(--green-main);
 }
 
-.load-item:hover {
+.load-item *:hover, .load-item:hover {
   cursor: pointer;
   cursor: hand;  
+}
+
+button.danger {
+  background-color: var(--brown-4);
+}
+
+button.options.danger:hover {
+  background-color: var(--brown-3) !important;
+}
+
+button.options.danger[disabled], button.options.danger[disabled]:hover {
+  background-color: grey !important; 
+}
+
+text {
+  stroke: white;
+  stroke-width: 0.1px;
+}
+
+.conventions {
+  width: 100%;
 }
