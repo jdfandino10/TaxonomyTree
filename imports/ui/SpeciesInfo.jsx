@@ -8,7 +8,6 @@ export default class SpeciesInfo extends Component {
 	}
 
 	render() {
-		console.log(this.props.species);
 		let img = "";
 		let count = "";
 		if(this.props.species){

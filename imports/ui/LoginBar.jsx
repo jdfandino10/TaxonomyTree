@@ -41,8 +41,8 @@ export default class LoginBar extends Component {
 	                </div>
 	            </div>
 	            <div className="col-sm-5 col-xs-8 float-right">
-	              <button className="btn options about" onClick={this.showAbout}>About</button>
 	              <AccountsUIWrapper />
+	              <button className="btn options about float-right" onClick={this.showAbout}>About</button>
 	            </div>
 	          </div>
 	          { 

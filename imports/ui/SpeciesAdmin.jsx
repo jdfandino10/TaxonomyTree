@@ -88,6 +88,7 @@ export default class SpeciesAdmin extends Component {
     });
 
     this.setState({nodes, links});
+    this.setState({ loadingNode: false });
   }
 
   getLineage = (name, id) => {
@@ -126,6 +127,7 @@ export default class SpeciesAdmin extends Component {
 
   updateTree = (e) => {
     e.preventDefault();
+    this.setState({ loadingNode: true });
     const name = this.capFirstLetter(this.state.species);
     this.getId(name);
   }
@@ -135,7 +137,7 @@ export default class SpeciesAdmin extends Component {
   }
 
   setMessageDialog = (title, message) => {
-    this.setState({ dialog: { title, message } });
+    this.setState({ dialog: { title, message }, loadingNode: false, loadingSpecies: false });
   }
 
   deleteSpecies = (speciesId) => {
@@ -159,35 +161,28 @@ export default class SpeciesAdmin extends Component {
   }
 
   setSpeciesToDisplay = (species) => {
-    console.log('set species llamado');
+    this.setState({ loadingSpecies: true });
     let specieInfo = Meteor.call("api.getSpeciesInfo", species, (error, result) => {
       if (error) {
         this.setMessageDialog('Error', error.error);
         this.setState({ display: ''});
       } else {
         this.setState({ display: { species: species, info: result } });
+        this.setState({ loadingSpecies: false });
       }
     });
-  }
-
-  save = () => {
-
-  }
-
-  load = () => {
-
   }
 
   noUserMessage = () => {
     return (
       <div className="row no-user-info">
-        <i>For being able to save and load, please <a>login or sign up</a>.</i>
+        <i>To save and load, please <a>login or sign up</a>.</i>
       </div>
     );
   }
 
   newGraph = () => {
-    this.setMessageDialog('New graph', 'Are your sure you want to reset the to a new graph? Any unsaved changes will be lost.');
+    this.setMessageDialog('New graph', 'Are your sure you want to reset to a new graph? Any unsaved changes will be lost.');
   }
 
   deleteGraph = () => {
@@ -198,10 +193,10 @@ export default class SpeciesAdmin extends Component {
     return (
       <div className="row">
         <div className="col-xs-12">
-          <button className="btn options float-right" onClick={this.showSave}> Save </button>
-          <button className="btn options float-right" onClick={this.showLoad}> Load </button>
-          <button className="btn options float-right" onClick={this.newGraph}> New </button>
-          <button className="btn options danger float-right" onClick={this.deleteGraph} disabled={this.state.graphId === ''}> Delete </button>
+          <button className="btn options" onClick={this.showSave}> Save </button>
+          <button className="btn options" onClick={this.showLoad}> Load </button>
+          <button className="btn options" onClick={this.newGraph}> New </button>
+          <button className="btn options danger" onClick={this.deleteGraph} disabled={this.state.graphId === ''}> Delete </button>
         </div>
       </div>
     );
@@ -264,10 +259,10 @@ export default class SpeciesAdmin extends Component {
     if (this.state.dialog.title === 'Delete graph') {
       Meteor.call('graphs.deleteGraph', this.state.graphId, (err, result) => {
           if (err) this.setMessageDialog('Error', err.message);
-          else this.setState({nodes: [{ id: 'Life', rank: 'Life', group: 0 }], links: [], name: '', graphId: ''});
+          else this.setState({nodes: [{ id: 'Life', rank: 'Life', group: 0 }], links: [], name: '', graphId: '', display: ''});
       });
     } else {
-      this.setState({nodes: [{ id: 'Life', rank: 'Life', group: 0 }], links: [], name: '', graphId: ''});
+      this.setState({nodes: [{ id: 'Life', rank: 'Life', group: 0 }], links: [], name: '', graphId: '', display: ''});
     }
     this.resetMessageDialog();
   }
@@ -278,24 +273,33 @@ export default class SpeciesAdmin extends Component {
         <div className="row main-content">  
           <div className="col-sm-7 col-xs-12 graph-side">
             <div className="row query">
-              <form>
-                <label htmlFor="species">Enter a species:</label>
-                <input type="text" name="species" value={this.state.species} onChange={this.handleSpecies}/>
-                <input type="submit" value="Search" className="btn options" onClick={this.updateTree} />
-              </form>
+              <div className="col-xs-10">
+                <form>
+                  <label htmlFor="species">Enter a species:</label>
+                  <input type="text" name="species" value={this.state.species} onChange={this.handleSpecies}/>
+                  <input type="submit" value="Search" className="btn options" onClick={this.updateTree} />
+                </form>
+              </div>
+              <div className="col-xs-2">
+                { this.state.loadingNode ? <div className="loading-waiting" /> : ''}
+              </div>
             </div>
+            
             <div className="col-xs-2" >
               <img src="./imgs/convenciones.png" className="conventions" />
             </div>
             <div className="col-xs-10" >
               <Graph nodes={this.state.nodes} links={this.state.links} speciesCallback={this.setSpeciesToDisplay} />
             </div>
+            <div className="row">
+              {
+                this.props.currentUser ? this.saveAndLoadDiv() : this.noUserMessage()
+              }
+            </div>
           </div>
           <div className="row col-sm-5 col-xs-12">
-            {
-                this.props.currentUser ? this.saveAndLoadDiv() : this.noUserMessage()
-            }
             <div className="species-side">
+              { this.state.loadingSpecies ? <div className="loading-waiting" /> : ''}
               <SpeciesInfo species={this.state.display} deleteSpecies={this.deleteSpecies}/>
             </div>
           </div>
