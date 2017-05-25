@@ -54,7 +54,7 @@ export default class SpeciesAdmin extends Component {
       { id: name, rank: granularity[granularity.length-1], group: granularity.length-1}
     ];
     let newLinks = [];
-    
+
     lin.forEach( (elem) => {
       const r = this.capFirstLetter(elem.rank);
       const index = granularity.indexOf(r);
@@ -99,7 +99,7 @@ export default class SpeciesAdmin extends Component {
         this.createNodes(name, result);
       }
     });
-  } 
+  }
 
   getId = (name) => {
     Meteor.call('api.getSpeciesId', name, (error, result) => {
@@ -163,11 +163,17 @@ export default class SpeciesAdmin extends Component {
 
   setSpeciesToDisplay = (species) => {
     console.log('set species llamado');
-    this.setState({ display: species });
+    let specieInfo = Meteor.call("api.getSpeciesInfo", species, (error, result) => {
+      if (error) {
+        this.setMessageDialog('Error', error.error);
+      } else {
+        this.setState({ display: { species: species, info: result } });
+      }
+    });
   }
 
   save = () => {
-    
+
   }
 
   load = () => {
@@ -235,7 +241,7 @@ export default class SpeciesAdmin extends Component {
           if (err) this.setMessageDialog('Error', err.message);
           else this.setState({ name: name });
         });
-      } 
+      }
     } else {
 
 
@@ -252,7 +258,7 @@ export default class SpeciesAdmin extends Component {
   render() {
     return (
       <div>
-        <div className="row main-content">  
+        <div className="row main-content">
           <div className="col-sm-6 col-xs-12 graph-side">
             <div className="row query">
               <form>
@@ -272,9 +278,9 @@ export default class SpeciesAdmin extends Component {
             </div>
           </div>
         </div>
-        { 
-          this.state.dialog.title !== '' 
-          ? (this.state.dialog.title === 'New graph' 
+        {
+          this.state.dialog.title !== ''
+          ? (this.state.dialog.title === 'New graph'
             ? <GenericMessage title={ this.state.dialog.title } message={ this.state.dialog.message } remove={ this.resetGraph } cancel={ this.resetMessageDialog } showCancel={true}/>
             : <GenericMessage title={ this.state.dialog.title } message={ this.state.dialog.message } remove={ this.resetMessageDialog }/>)
           : ''
