@@ -41,6 +41,7 @@ export default class Observations extends Component {
 					<Observation observation={this.props.observations[this.state.index]} />
 					<button onClick={this.nextObservation} className="btn options float-right">Next Observation </button>
 					<button onClick={this.prevObservation} className="btn options float-right">Previous Observation </button>
+					<h3>Map:</h3>
 					<Map observations={this.props.observations} />
 
 				</div>

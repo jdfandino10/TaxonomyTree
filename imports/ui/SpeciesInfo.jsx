@@ -23,6 +23,7 @@ export default class SpeciesInfo extends Component {
 				<div className="col-xs-12">
 					<h2>Species Information</h2>
 					<div className="col-xs-12">
+						<h3>General:</h3>
 						<div className="col-xs-12 observation">
 							<label>Species:</label> <i>{this.props.species.species} </i> <br/>
 							<label>Identified Count:</label> {count? count : 'N/A'} <br/>
@@ -31,8 +32,9 @@ export default class SpeciesInfo extends Component {
 							<label>Image:</label> <div className="image"> {img? <img alt="" src={img} width="150" /> : 'No image available'} </div><br/>
 						</div>
 					</div>
-					<Observations observations={this.props.species.info.observations} />
+
 					<button onClick={this.deleteSpecies} className="btn options float-right">Delete Species from graph </button>
+					<Observations observations={this.props.species.info.observations} />
 
 				</div>
 			);
