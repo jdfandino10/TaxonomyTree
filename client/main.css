@@ -236,7 +236,7 @@ text {
 text:hover {
   fill: black;
   stroke: white;
-  stroke-width: 0.5px;
+  stroke-width: 0.05px;
 }
 
 .conventions {
@@ -290,4 +290,8 @@ text:hover {
 .inline {
   float: left;
   margin-left: 10px;
+}
+
+a.login-link {
+  cursor: pointer;
 }

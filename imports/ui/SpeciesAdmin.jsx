@@ -176,7 +176,7 @@ export default class SpeciesAdmin extends Component {
   noUserMessage = () => {
     return (
       <div className="row no-user-info">
-        <i>To save and load, please <a onClick={this.showLogin}>login or sign up</a>.</i>
+        <i>To save and load, please <a className="login-link" onClick={this.showLogin}>login or sign up</a>.</i>
       </div>
     );
   }
