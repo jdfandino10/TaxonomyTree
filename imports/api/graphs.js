@@ -16,13 +16,12 @@ graph: {
 */
 if (Meteor.isServer) {
   Meteor.publish('graphs', function graphPublication() {
-    return Graphs.find({ 'owner': { $eq: this.userId } });
+    return Graphs.find({ 'owner': { $eq: this.userId } }, { fields: { _id: 1, dateCreated: 1, name: 1, owner: 1 }});
   });
 }
 
 Meteor.methods({
   'graphs.newGraph': function newGraph(name, nodes, links) {
-    console.log('se llamó al new graph');
     check(name, String);
     check(nodes, Array);
     check(links, Array);
@@ -47,5 +46,12 @@ Meteor.methods({
     if (!graph) throw new Meteor.Error('Can\'t update graph', 'Graph couldn\'t be found');
     if (graph.owner !== this.userId) throw new Meteor.Error('Can\'t update graph', 'You don\'t have permission to modify this graph.');
     Graphs.remove(graphId);
+  },
+  'graphs.getGraph': function getGraph(graphId) {
+    check(graphId, String);
+    const graph = Graphs.findOne(graphId);
+    if (!graph) throw new Meteor.Error('Can\'t get graph', 'Graph couldn\'t be found');
+    if (graph.owner !== this.userId) throw new Meteor.Error('Can\'t get graph', 'You don\'t have permission to see this graph.');
+    return { nodes: graph.nodes, links: graph.links };
   },
 });
