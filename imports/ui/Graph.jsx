@@ -26,7 +26,6 @@ export default class Graph extends Component {
   }
 
   speciesCallback = (species) => {
-    console.log('va a llamar set species con: ' + species);
     this.props.speciesCallback(species);
   }
 

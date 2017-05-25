@@ -36,9 +36,10 @@ Meteor.methods({
     check(nodes, Array);
     check(links, Array);
     const graph = Graphs.findOne(graphId);
+    let dateCreated = new Date();
     if (!graph) throw new Meteor.Error('Can\'t update graph', 'Graph couldn\'t be found.');
     if (graph.owner !== this.userId) throw new Meteor.Error('Can\'t update graph', 'You don\'t have permission to modify this graph.');
-    Graphs.update(graphId, { $set: { name, nodes, links } });
+    Graphs.update(graphId, { $set: { name, nodes, links, dateCreated } });
   },
   'graphs.deleteGraph': function deleteGraph(graphId) {
     check(graphId, String);

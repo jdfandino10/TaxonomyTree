@@ -12,6 +12,6 @@ export default class AccountUIWrapper extends Component {
     Blaze.remove(this.view);
   }
   render() {
-    return <span id="accounts-wrapper" ref={(c) => { this.container = c; }} className="pull-right" />;
+    return <span id="accounts-wrapper" ref={(c) => { this.container = c; }} className="float-right" />;
   }
 }

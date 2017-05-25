@@ -79,7 +79,6 @@ export default class SpeciesAdmin extends Component {
     });
 
     let links = this.state.links.concat(newLinks);
-    console.log(links);
     links = this.arrayUnique(links, function(a, b) {
       let idSourceA = a.source.id || a.source;
       let idSourceB = b.source.id || b.source;
@@ -89,6 +88,7 @@ export default class SpeciesAdmin extends Component {
     });
 
     this.setState({nodes, links});
+    this.setState({ loadingNode: false });
   }
 
   getLineage = (name, id) => {
@@ -127,6 +127,7 @@ export default class SpeciesAdmin extends Component {
 
   updateTree = (e) => {
     e.preventDefault();
+    this.setState({ loadingNode: true });
     const name = this.capFirstLetter(this.state.species);
     this.getId(name);
   }
@@ -136,7 +137,7 @@ export default class SpeciesAdmin extends Component {
   }
 
   setMessageDialog = (title, message) => {
-    this.setState({ dialog: { title, message } });
+    this.setState({ dialog: { title, message }, loadingNode: false, loadingSpecies: false });
   }
 
   deleteSpecies = (speciesId) => {
@@ -153,53 +154,49 @@ export default class SpeciesAdmin extends Component {
   }
 
   deleteNodesById = (idArray) => {
-    console.log('va a borrar '+idArray);
     this.setState({
                     nodes: this.state.nodes.filter((node) => { return !idArray.includes(node.id) }),
                     links: this.state.links.filter((link) => { return !idArray.includes(link.target.id) })
                   });
-    console.log('nuevos links: ' + this.state.links);
   }
 
   setSpeciesToDisplay = (species) => {
-    console.log('set species llamado');
     this.setState({ display: ''});
+    this.setState({ loadingSpecies: true });
     let specieInfo = Meteor.call("api.getSpeciesInfo", species, (error, result) => {
       if (error) {
         this.setMessageDialog('Error', error.error);
       } else {
         this.setState({ display: { species: species, info: result } });
+        this.setState({ loadingSpecies: false });
       }
     });
-  }
-
-  save = () => {
-
-  }
-
-  load = () => {
-
   }
 
   noUserMessage = () => {
     return (
       <div className="row no-user-info">
-        <i>For being able to save and load, please <a>login or sign up</a>.</i>
+        <i>To save and load, please <a>login or sign up</a>.</i>
       </div>
     );
   }
 
   newGraph = () => {
-    this.setMessageDialog('New graph', 'Are your sure you want to reset the to a new graph? Any unsaved changes will be lost.');
+    this.setMessageDialog('New graph', 'Are your sure you want to reset to a new graph? Any unsaved changes will be lost.');
+  }
+
+  deleteGraph = () => {
+    this.setMessageDialog('Delete graph', 'Are your sure you want to delete the current graph: '+this.state.name+'? This can\'t be undone.');
   }
 
   saveAndLoadDiv = () => {
     return (
       <div className="row">
         <div className="col-xs-12">
-          <button className="btn options float-right" onClick={this.showSave}> Save </button>
-          <button className="btn options float-right" onClick={this.showLoad}> Load </button>
-          <button className="btn options float-right" onClick={this.newGraph}> New </button>
+          <button className="btn options" onClick={this.showSave}> Save </button>
+          <button className="btn options" onClick={this.showLoad}> Load </button>
+          <button className="btn options" onClick={this.newGraph}> New </button>
+          <button className="btn options danger" onClick={this.deleteGraph} disabled={this.state.graphId === ''}> Delete </button>
         </div>
       </div>
     );
@@ -232,7 +229,6 @@ export default class SpeciesAdmin extends Component {
       let graphId = this.state.graphId;
       if (!overwrite) {
         Meteor.call('graphs.newGraph', name, nodes, links, (err, result) => {
-          console.log(result);
           if (err) this.setMessageDialog('Error', err.message);
           else this.setState({ name: name, graphId: result });
         });
@@ -240,7 +236,7 @@ export default class SpeciesAdmin extends Component {
       else {
         Meteor.call('graphs.updateGraph', graphId, name, nodes, links, (err, result) => {
           if (err) this.setMessageDialog('Error', err.message);
-          else this.setState({ name: name });
+          else this.setState({ name: name, graphId: graphId });
         });
       }
     } else {
@@ -260,7 +256,14 @@ export default class SpeciesAdmin extends Component {
   }
 
   resetGraph = () => {
-    this.setState({nodes: [{ id: 'Life', rank: 'Life', group: 0 }], links: [], name: '', graphId: ''});
+    if (this.state.dialog.title === 'Delete graph') {
+      Meteor.call('graphs.deleteGraph', this.state.graphId, (err, result) => {
+          if (err) this.setMessageDialog('Error', err.message);
+          else this.setState({nodes: [{ id: 'Life', rank: 'Life', group: 0 }], links: [], name: '', graphId: '', display: ''});
+      });
+    } else {
+      this.setState({nodes: [{ id: 'Life', rank: 'Life', group: 0 }], links: [], name: '', graphId: '', display: ''});
+    }
     this.resetMessageDialog();
   }
 
@@ -268,28 +271,42 @@ export default class SpeciesAdmin extends Component {
     return (
       <div>
         <div className="row main-content">
-          <div className="col-sm-6 col-xs-12 graph-side">
+          <div className="col-sm-7 col-xs-12 graph-side">
             <div className="row query">
-              <form>
-                <label htmlFor="species">Enter a species:</label>
-                <input type="text" name="species" value={this.state.species} onChange={this.handleSpecies}/>
-                <input type="submit" value="Search" className="btn options" onClick={this.updateTree} />
-              </form>
+              <div className="col-xs-10">
+                <form>
+                  <label htmlFor="species">Enter a species:</label>
+                  <input type="text" name="species" value={this.state.species} onChange={this.handleSpecies}/>
+                  <input type="submit" value="Search" className="btn options" onClick={this.updateTree} />
+                </form>
+              </div>
+              <div className="col-xs-2">
+                { this.state.loadingNode ? <div className="loading-waiting" /> : ''}
+              </div>
             </div>
-            <Graph nodes={this.state.nodes} links={this.state.links} speciesCallback={this.setSpeciesToDisplay} />
-          </div>
-          <div className="row col-sm-6 col-xs-12">
-            {
+
+            <div className="col-xs-2" >
+              <img src="./imgs/convenciones.png" className="conventions" />
+            </div>
+            <div className="col-xs-10" >
+              <Graph nodes={this.state.nodes} links={this.state.links} speciesCallback={this.setSpeciesToDisplay} />
+            </div>
+            <div className="row">
+              {
                 this.props.currentUser ? this.saveAndLoadDiv() : this.noUserMessage()
-            }
+              }
+            </div>
+          </div>
+          <div className="row col-sm-5 col-xs-12">
             <div className="species-side">
+              { this.state.loadingSpecies ? <div className="loading-waiting" /> : ''}
               <SpeciesInfo species={this.state.display} deleteSpecies={this.deleteSpecies}/>
             </div>
           </div>
         </div>
         {
           this.state.dialog.title !== ''
-          ? (this.state.dialog.title === 'New graph'
+          ? (this.state.dialog.title === 'New graph' || this.state.dialog.title === 'Delete graph'
             ? <GenericMessage title={ this.state.dialog.title } message={ this.state.dialog.message } remove={ this.resetGraph } cancel={ this.resetMessageDialog } showCancel={true}/>
             : <GenericMessage title={ this.state.dialog.title } message={ this.state.dialog.message } remove={ this.resetMessageDialog }/>)
           : ''
