@@ -202,5 +202,16 @@ button.float-right {
 
 .load-item:hover {
   cursor: pointer;
-  cursor: hand;  
+  cursor: hand;
+}
+
+.observation{
+  background-color: var(--green-main);
+  color: white;
+  padding: 25px;
+  border-radius: 10px;
+  margin: 10px 0px;
+}
+.image{
+  text-align: center;  
 }

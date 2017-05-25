@@ -163,10 +163,10 @@ export default class SpeciesAdmin extends Component {
 
   setSpeciesToDisplay = (species) => {
     console.log('set species llamado');
+    this.setState({ display: ''});
     let specieInfo = Meteor.call("api.getSpeciesInfo", species, (error, result) => {
       if (error) {
         this.setMessageDialog('Error', error.error);
-        this.setState({ display: ''});
       } else {
         this.setState({ display: { species: species, info: result } });
       }
