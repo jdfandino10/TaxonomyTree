@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Observation from './Observation.jsx';
-import Map from './Map.jsx';
 
 export default class Observations extends Component {
 
@@ -39,10 +38,9 @@ export default class Observations extends Component {
 				<div className="col-xs-12">
 					<h3>Observations:</h3>
 					<Observation observation={this.props.observations[this.state.index]} />
-					<button onClick={this.nextObservation} className="btn options float-right">Next Observation </button>
-					<button onClick={this.prevObservation} className="btn options float-right">Previous Observation </button>
-					<h3>Map:</h3>
-					<Map observations={this.props.observations} />
+					<button onClick={this.nextObservation} className="btn options float-right"> &gt; &gt; </button>
+					<button onClick={this.prevObservation} className="btn options float-right"> &lt; &lt; </button>
+
 
 				</div>
 			);
