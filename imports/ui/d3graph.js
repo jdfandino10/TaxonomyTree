@@ -22,7 +22,7 @@ export default class d3graph {
 
     this.simulation = d3.forceSimulation()
       .force('link', this.linkForce)
-      .force('charge', d3.forceManyBody().strength(-100))
+      .force('charge', d3.forceManyBody().strength(-20))
       .force('center', d3.forceCenter(width / 2, height / 3));
 
     this.dragDrop = d3.drag().on('start', (node) => {
@@ -96,7 +96,7 @@ export default class d3graph {
           this.speciesCallback(node.id);
         }
       });
-      graph.links.forEach((link) => { link.source.y -= k, link.target.y += k; });
+      graph.links.forEach((link) => { link.target.y += k; });
       this.linkElements
         .attr('x1', (link) => { return link.source.x; })
         .attr('y1', (link) => { return link.source.y; })

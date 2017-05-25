@@ -17,7 +17,7 @@ export default class SpeciesInfo extends Component {
 			return (
 				<div className="col-xs-12">
 					<h2>Species Information</h2>
-					<label>Species:</label> {this.props.species.species} <br/>
+					<label>Species:</label> <i>{this.props.species.species} </i> <br/>
 					<label>Identified Count:</label> {count? count : 'N/A'} <br/>
 					<label>Image:</label> {img? <img alt="" src={img} width="200" /> : 'No image available'}<br/>
 	      	<button onClick={this.deleteSpecies} className="btn options float-center">Delete Species from graph </button>
