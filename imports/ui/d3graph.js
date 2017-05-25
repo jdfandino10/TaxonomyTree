@@ -23,7 +23,7 @@ export default class d3graph {
     this.simulation = d3.forceSimulation()
       .force('link', this.linkForce)
       .force('charge', d3.forceManyBody().strength(-50))
-      .force('center', d3.forceCenter(width / 2, 2*height / 3));
+      .force('center', d3.forceCenter(width / 2, 1*height / 2 + 50));
 
     this.startDrag = (node) => {
       node.fx = node.x;
