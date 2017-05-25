@@ -176,9 +176,13 @@ export default class SpeciesAdmin extends Component {
   noUserMessage = () => {
     return (
       <div className="row no-user-info">
-        <i>To save and load, please <a>login or sign up</a>.</i>
+        <i>To save and load, please <a onClick={this.showLogin}>login or sign up</a>.</i>
       </div>
     );
+  }
+
+  showLogin = () => {
+    document.getElementById('login-sign-in-link').click();
   }
 
   newGraph = () => {
@@ -230,13 +234,13 @@ export default class SpeciesAdmin extends Component {
       if (!overwrite) {
         Meteor.call('graphs.newGraph', name, nodes, links, (err, result) => {
           if (err) this.setMessageDialog('Error', err.message);
-          else this.setState({ name: name, graphId: result });
+          else this.setState({ name: name, graphId: result, display: '' });
         });
       }
       else {
         Meteor.call('graphs.updateGraph', graphId, name, nodes, links, (err, result) => {
           if (err) this.setMessageDialog('Error', err.message);
-          else this.setState({ name: name, graphId: graphId });
+          else this.setState({ name: name, graphId: graphId, display: '' });
         });
       }
     } else {
@@ -245,7 +249,7 @@ export default class SpeciesAdmin extends Component {
       let name = selected.name;
       Meteor.call('graphs.getGraph', graphId, (err, result) => {
           if (err) this.setMessageDialog('Error', err.message);
-          else this.setState({ name: name, graphId: graphId, nodes: result.nodes, links: this.formatLinks(result.links) });
+          else this.setState({ name: name, graphId: graphId, nodes: result.nodes, links: this.formatLinks(result.links), display: '' });
       });
     }
     this.hideSaveLoad();
@@ -271,18 +275,24 @@ export default class SpeciesAdmin extends Component {
     return (
       <div>
         <div className="row main-content">
+          <div className="row graph-title">
+            <h2>Graph: {this.state.graphId ? this.state.name : '-- (unsaved graph)'} </h2>
+            <div className="row">
+              {
+                this.props.currentUser ? this.saveAndLoadDiv() : this.noUserMessage()
+              }
+            </div>
+          </div>
           <div className="col-sm-7 col-xs-12 graph-side">
             <div className="row query">
-              <div className="col-xs-10">
+              <div className="inline">
                 <form>
                   <label htmlFor="species">Enter a species:</label>
                   <input type="text" name="species" value={this.state.species} onChange={this.handleSpecies}/>
                   <input type="submit" value="Search" className="btn options" onClick={this.updateTree} />
                 </form>
               </div>
-              <div className="col-xs-2">
-                { this.state.loadingNode ? <div className="loading-waiting" /> : ''}
-              </div>
+              { this.state.loadingNode ? <div className="loading-waiting" /> : ''}
             </div>
 
             <div className="col-xs-2" >
@@ -291,16 +301,10 @@ export default class SpeciesAdmin extends Component {
             <div className="col-xs-10" >
               <Graph nodes={this.state.nodes} links={this.state.links} speciesCallback={this.setSpeciesToDisplay} />
             </div>
-            <div className="row">
-              {
-                this.props.currentUser ? this.saveAndLoadDiv() : this.noUserMessage()
-              }
-            </div>
           </div>
           <div className="row col-sm-5 col-xs-12">
-            <div className="species-side">
-              { this.state.loadingSpecies ? <div className="loading-waiting" /> : ''}
-              <SpeciesInfo species={this.state.display} deleteSpecies={this.deleteSpecies}/>
+            <div>
+              <SpeciesInfo species={this.state.display} deleteSpecies={this.deleteSpecies} loading={this.state.loadingSpecies}/>
             </div>
           </div>
         </div>

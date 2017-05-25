@@ -19,7 +19,7 @@ Meteor.methods({
     };
     try{
       let req = Meteor.http.call('POST', ott, { data });
-      if (req.data.results[0].matches[0].taxon.rank !== 'species') {
+      if (!req.data.results[0] || req.data.results[0].matches[0].taxon.rank !== 'species') {
         throw new Meteor.Error('The given name isn\'t a species');
       }
       return {
@@ -28,7 +28,7 @@ Meteor.methods({
       };
     } catch (e) {
       console.log('error: '+e);
-      throw new Meteor.Error('Cant\'t find that species (species name: '+name+')');
+      throw new Meteor.Error('Can\'t find that species (species name: '+name+')');
     }
 	},
 	'api.getLineageFromId': function getLineageFromId(speciesId) {
@@ -42,7 +42,7 @@ Meteor.methods({
       return req.data.lineage;
     } catch (e) {
       console.log('error: '+e);
-      throw new Meteor.Error('Cant\'t find that species lineage (species id: '+speciesId+')');
+      throw new Meteor.Error('Can\'t find that species lineage (species id: '+speciesId+')');
     }
 	},
 	'api.getSpeciesInfo': function getSpeciesInfo(name) {
@@ -56,15 +56,6 @@ Meteor.methods({
       console.log('error: '+e);
       throw new Meteor.Error('Error retriving information of the species (species id: '+name+')');
     }
-  //  const query = { taxon_name: species };
-  //  console.log(query);
-  // return inatjs.observations.search(query).then( rsp => {
-  //     console.log(rsp);
-  //     return rsp;
-  //   }).catch( e => {
-  //     console.log( "Search failed:", e );
-  //     throw new Meteor.Error('Search of information failed (species name: '+name+')');
-  //   });;
 	},
 
 });

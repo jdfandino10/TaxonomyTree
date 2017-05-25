@@ -27,6 +27,7 @@
 
 body {
   padding: 10px;
+  font-family: Oswald;
 }
 
 
@@ -88,17 +89,17 @@ h1.logo {
   stroke-width: 1.5px;
 }
 
-#login-sign-in-link, #login-name-link, button.options, input.options {
+#login-buttons-password, #login-sign-in-link, #login-name-link, button.options, input.options {
   text-decoration: none !important;
-  font-family: Francois One;
+  font-family: Francois One !important;
   color: white;
-  border: 2px solid white;
+  border: 2px solid white !important;
   padding: 5px 35px;
   border-radius: 5px;
-  background-color: var(--green-3);
+  background-color: var(--green-3) !important;
 }
 
-.login-button:hover, #login-sign-in-link:hover, #login-name-link:hover, button.options:hover, input.options:hover, .login-button:focus, #login-sign-in-link:focus, #login-name-link:focus, button.options:focus, input.options:focus {
+#login-buttons-password:hover, .login-button:hover, #login-sign-in-link:hover, #login-name-link:hover, button.options:hover, input.options:hover, .login-button:focus, #login-sign-in-link:focus, #login-name-link:focus, button.options:focus, input.options:focus {
   background-color: var(--green-main) !important;
   color:white;
 }
@@ -118,13 +119,14 @@ a.login-close-text {
 
 #login-dropdown-list {
   position: absolute;
-  top: 32vh;
-  left: -46vw;
-  background-color: var(--yellow-main);
+  top: 20vh;
+  left: -40vw;
   border-radius: 0;
-  border: 1px solid var(--green-3);
-  box-shadow: 0px 0px 15px var(--yellow-main);
   z-index: 10;
+  background-color: var(--yellow-main);
+  box-shadow: 0px 0px 15px var(--yellow-3);
+  border-radius: 10px;
+  border-color: var(--yellow-main);
 }
 
 #login-dropdown-list a {
@@ -144,15 +146,11 @@ nav {
   margin: 10px 0px;
 }
 
-input[type=text] {
+input[name=species] {
   border-radius: 5px;
   border: solid 1px var(--brown-4);
   margin-left: 10px;
   padding: 0 5px;
-}
-
-.species-side {
-  border-left: solid 1px var(--green-3);
 }
 
 circle:hover {
@@ -224,8 +222,6 @@ button.options.danger[disabled], button.options.danger[disabled]:hover {
 }
 
 text {
-  stroke: white;
-  stroke-width: 0.1px;
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
      -khtml-user-select: none; /* Konqueror HTML */
@@ -233,7 +229,14 @@ text {
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
-  pointer-events: none;
+  cursor: pointer;
+  fill: rgba(0,0,0,0);
+}
+
+text:hover {
+  fill: black;
+  stroke: white;
+  stroke-width: 0.5px;
 }
 
 .conventions {
@@ -252,6 +255,9 @@ text {
   border-right: 5px solid var(--yellow-4);
   border-left: 5px solid var(--green-4);
   padding: 5px;
+  float: left;
+  margin-top: 5px;
+  margin-left: 10px;
 }
 
 @-webkit-keyframes rotation {
@@ -266,7 +272,22 @@ text {
   padding: 25px;
   border-radius: 10px;
   margin: 10px 0px;
+  font-weight: bold;
 }
+
 .image{
   text-align: center;
+}
+
+.graph-title h2 {
+  display: inline;
+}
+
+.graph-title {
+  margin-left: 20px;
+}
+
+.inline {
+  float: left;
+  margin-left: 10px;
 }

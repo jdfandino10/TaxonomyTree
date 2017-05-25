@@ -40,7 +40,7 @@ export default class SpeciesInfo extends Component {
 			return (
 				<div>
 					<h2>Species Information</h2>
-					<p>Select a species in the graph in order to see information about it</p>
+					{this.props.loading ? <div className="loading-waiting" /> : <p>Click a species node in the graph in order to see information about it</p>}
 				</div>
 			);
 		}

@@ -3,8 +3,10 @@
 export default class d3graph {
 
   constructor(el, graph, speciesCallback) {
-    const width = el.getBoundingClientRect().width;
-    const height = el.getBoundingClientRect().width * 4/5;
+    this.width = el.getBoundingClientRect().width;
+    this.height = el.getBoundingClientRect().width;
+    let width = this.width;
+    let height = this.height;
     this.svg =  d3.select(el).append('svg')
       .attr('class', 'd3')
       .attr('width', width)
@@ -16,14 +18,14 @@ export default class d3graph {
     this.linkForce = d3.forceLink()
       .id((link) => { return link.id; })
       .strength(1)
-      .distance(20);
+      .distance(35);
 
 
 
     this.simulation = d3.forceSimulation()
       .force('link', this.linkForce)
-      .force('charge', d3.forceManyBody().strength(-50))
-      .force('center', d3.forceCenter(width / 2, 1*height / 2 + 50));
+      .force('charge', d3.forceManyBody().strength(-10))
+      .force('center', d3.forceCenter(width / 2, height / 2 ));
 
     this.startDrag = (node) => {
       node.fx = node.x;
@@ -88,9 +90,11 @@ export default class d3graph {
     const textEnter = this.textElements.enter()
       .append('text')
       .text((node) => { return node.id; })
-      .attr('font-size', 10)
-      .attr('dx', 15)
-      .attr('dy', 4);
+      .attr('font-size', 14)
+      .attr('font-weight', 'bold')
+      .attr('dx', (node) => { return -1*(node.id.length)*3 })
+      .attr('dy', 5)
+      .call(this.dragDrop);
 
     this.textElements = textEnter.merge(this.textElements);
 
@@ -100,11 +104,14 @@ export default class d3graph {
     this.updateGraph(graph);
 
     this.simulation.nodes(graph.nodes).on('tick', () => {
-      let k = 25 * this.simulation.alpha();
-      this.nodeElements.attr('cx', (node) => { return node.x; }).attr('cy', (node) => { return node.y; });
+      let k = 15 * this.simulation.alpha();
+      let r = 10;
+      let width = this.width;
+      let height = this.height;
+      this.nodeElements.attr('cx', (d) => { return d.x = Math.max(r, Math.min(width - r, d.x)); })
+                       .attr('cy', (d) => { return d.y = Math.max(r, Math.min(height - r, d.y)); });
       this.textElements.attr('x', (node) => { return node.x; }).attr('y', (node) => { return node.y; });
-      this.nodeElements.on('click', (node) => {
-
+      this.textElements.on('click', (node) => {
         if (node.rank === 'Species' && this.speciesCallback) {
           this.speciesCallback(node.id);
         }

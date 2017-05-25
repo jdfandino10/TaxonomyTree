@@ -17,9 +17,9 @@ export default class LoginBar extends Component {
 
 	showAbout = () => {
 		let title = "About";
-		let message = "On this webpage you can create any animal tree given the species. " +
-					"Also, you can visualize information about the species on your tree. " +
-					"Create a user to be able to save and load your creations!";
+		let message = "On this webpage you can create any Taxonomy tree given the species. " +
+					"Also, you can visualize information* about the species on your tree. " +
+					"Create a user to be able to save and load your creations! \n *Information is from <a>test</a>";
 		let dialog = { title, message };
 		this.setState({dialog});
 	}
