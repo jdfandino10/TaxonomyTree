@@ -93,7 +93,7 @@ $('#accounts-wrapper').bind('DOMNodeInserted', () => {
     }
     removeFocus();
   } else {
-    signModalToggle.focus();
+    // signModalToggle.focus();
     restoreFocus();
   }
   if (close.length !== 0) {

@@ -275,15 +275,15 @@ export default class SpeciesAdmin extends Component {
     return (
       <div>
         <div className="row main-content">
-          <div className="row graph-title">
-            <h2>Graph: {this.state.graphId ? this.state.name : '-- (unsaved graph)'} </h2>
-            <div className="row">
-              {
-                this.props.currentUser ? this.saveAndLoadDiv() : this.noUserMessage()
-              }
-            </div>
-          </div>
           <div className="col-sm-7 col-xs-12 graph-side">
+            <div className="row graph-title">
+              <h2>Graph: {this.state.graphId ? this.state.name : '-- (unsaved graph)'} </h2>
+              <div className="row">
+                {
+                  this.props.currentUser ? this.saveAndLoadDiv() : this.noUserMessage()
+                }
+              </div>
+            </div>
             <div className="row query">
               <div className="inline">
                 <form>

@@ -1,16 +1,33 @@
 import React, { Component } from 'react';
 import Observations from './Observations.jsx';
 import Map from './Map.jsx';
+import GenericMessage from './GenericMessage.jsx';
 
 export default class SpeciesInfo extends Component {
 
 	constructor(props){
 		super(props);
-		this.state = { component: 'general'};
+		this.state = { component: 'general', 'dialog': { title:'', message: '' } };
+	}
+
+	componentWillReceiveProps(nextProps) {
+		if (this.props.species !== nextProps.species) this.setState({component: 'general'});	
 	}
 
 	deleteSpecies = () => {
 		this.props.deleteSpecies(this.props.species.species);
+		this.resetMessageDialog();
+	}
+
+	showDeleteSpecies = () => {
+		let title = 'Delete node'
+		let message = 'Are you sure you want to delete the ' + this.props.species.species + ' node? ' +
+					  'This will also delete parent nodes that don\'t lead to other species.';
+		this.setState({ dialog: { title, message } });
+	}
+
+	resetMessageDialog = () => {
+		this.setState({ 'dialog': { title:'', message: '' } });
 	}
 
 	changeComponent = (component) => {
@@ -32,10 +49,12 @@ export default class SpeciesInfo extends Component {
 			count = this.props.species.info.taxa_stats.species_counts[0].count;
 			return (
 				<div className="col-xs-12">
-					<h2>Species Information</h2>
+					<h2>{this.props.species.species} Information</h2>
+					<button onClick={this.changeComponent} value="general" className={"btn options" + (this.state.component === "general" ? " selected" : "")}>General</button>
+					<button onClick={this.changeComponent} value="observations" className={"btn options" + (this.state.component === "observations" ? " selected" : "")}>Observations</button>
+					<button onClick={this.changeComponent} value="map" className={"btn options" + (this.state.component === "map" ? " selected" : "")}>Map</button>
 					{this.state.component == 'general'?
 										<div className="col-xs-12">
-											<h3>General:</h3>
 											<div className="col-xs-12 observation">
 												<label>Species:</label> <i>{this.props.species.species} </i> <br/>
 												<label>Identified Count:</label> {count? count : 'N/A'} <br/>
@@ -45,14 +64,15 @@ export default class SpeciesInfo extends Component {
 											</div>
 										</div> : this.state.component == 'observations'? <Observations observations={this.props.species.info.observations} /> :
 										this.state.component == 'map'? <div className="col-xs-12">
-																						<h3>Map:</h3>
-																						<Map observations={this.props.species.info.observations} />
-																					</div> : ''}
-					<button onClick={this.changeComponent} value="general" className="btn options float-right">General</button>
-					<button onClick={this.changeComponent} value="observations" className="btn options float-right">Observations</button>
-					<button onClick={this.changeComponent} value="map" className="btn options float-right">Map</button>
-					<button onClick={this.deleteSpecies} className="btn options float-right">Delete Species</button>
-
+																			<Map observations={this.props.species.info.observations} />
+																		</div> : ''}
+					
+					<button onClick={this.showDeleteSpecies} className="btn options danger">Delete Species</button>
+					{
+						this.state.dialog.title !== ''
+		            	? <GenericMessage title={ this.state.dialog.title } message={ this.state.dialog.message } remove={ this.deleteSpecies } cancel={ this.resetMessageDialog } showCancel={true}/>
+		          		: ''
+        			}
 				</div>
 			);
 		}else{

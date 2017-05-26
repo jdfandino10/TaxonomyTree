@@ -90,8 +90,8 @@ export default class d3graph {
     const textEnter = this.textElements.enter()
       .append('text')
       .text((node) => { return node.id; })
-      .attr('font-size', 16)
-      .attr('font-weight', 900)
+      .attr('font-size', 14)
+      .attr('font-weight', 'bold')
       .attr('dx', (node) => { return -1*(node.id.length)*3 })
       .attr('dy', 5)
       .call(this.dragDrop);

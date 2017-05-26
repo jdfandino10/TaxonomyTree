@@ -15,7 +15,7 @@ export default class Observation extends Component {
 			}
 			place = this.props.observation.place_guess;
 			return (
-				<div className="col-xs-12 observation">
+				<div className="col-xs-12">
 					<h4>Observation Information:</h4>
 					<label>Date:</label> <b>{date ? date : 'N/A'} </b> <br/>
 					<label>Description:</label> {notes ? notes : 'N/A'} <br/>

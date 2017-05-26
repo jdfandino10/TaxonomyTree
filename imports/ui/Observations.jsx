@@ -36,12 +36,11 @@ export default class Observations extends Component {
 			console.log(this.props.observations[this.state.index]);
 			return (
 				<div className="col-xs-12">
-					<h3>Observations:</h3>
-					<Observation observation={this.props.observations[this.state.index]} />
-					<button onClick={this.nextObservation} className="btn options float-right"> &gt; &gt; </button>
-					<button onClick={this.prevObservation} className="btn options float-right"> &lt; &lt; </button>
-
-
+					<div className="col-xs-12 observation">
+						<Observation observation={this.props.observations[this.state.index]} />
+						<button onClick={this.nextObservation} className="btn options float-right"> &gt; &gt; </button>
+						<button onClick={this.prevObservation} className="btn options float-right"> &lt; &lt; </button>
+					</div>
 				</div>
 			);
 		}else{

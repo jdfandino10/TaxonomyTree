@@ -89,7 +89,7 @@ h1.logo {
   stroke-width: 1.5px;
 }
 
-#login-buttons-password, #login-sign-in-link, #login-name-link, button.options, input.options {
+.login-button, #login-buttons-password, #login-sign-in-link, #login-name-link, button.options, input.options {
   text-decoration: none !important;
   font-family: Francois One !important;
   color: white;
@@ -146,7 +146,7 @@ nav {
   margin: 10px 0px;
 }
 
-input[name=species] {
+input[name=species], input[name=name] {
   border-radius: 5px;
   border: solid 1px var(--brown-4);
   margin-left: 10px;
@@ -163,8 +163,9 @@ circle:hover {
 }
 
 .about {
-  position: relative;
-  top: 5px;
+  position: relative !important;
+  top: 6px !important;
+  margin-right: 10px; 
 }
 
 .main-content {
@@ -210,7 +211,7 @@ button.float-right {
 }
 
 button.danger {
-  background-color: var(--brown-4);
+  background-color: var(--brown-4) !important;
 }
 
 button.options.danger:hover {
@@ -235,8 +236,9 @@ text {
 
 text:hover {
   fill: black;
-  stroke: white;
-  stroke-width: 0.05px;
+  /*stroke: white;
+  stroke-width: 0.01px;*/
+  text-shadow: -1px 0 white,0 1px white,1px 0 white,0 -1px white;
 }
 
 .conventions {
@@ -271,7 +273,8 @@ text:hover {
   color: white;
   padding: 25px;
   border-radius: 10px;
-  margin: 10px 0px;
+  margin: 0px 0px;
+  margin-left: -15px;
   font-weight: bold;
 }
 
@@ -294,4 +297,17 @@ text:hover {
 
 a.login-link {
   cursor: pointer;
+  color: var(--green-3);
+}
+
+a.login-link:hover {
+  color: var(--green-4);
+}
+
+button.selected {
+  background-color: var(--green-main) !important;
+}
+
+.observation label, .observation h4 {
+  text-shadow: -1px 0 white,0 1px white,1px 0 white,0 -1px white; 
 }

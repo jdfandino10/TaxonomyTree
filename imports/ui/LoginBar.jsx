@@ -18,14 +18,15 @@ export default class LoginBar extends Component {
 	showAbout = () => {
 		let title = "About";
 		let message = "On this webpage you can create any Taxonomy tree given the species. " +
-					"Also, you can visualize information* about the species on your tree. " +
-					"Create a user to be able to save and load your creations! \n *Information is from <a>test</a>";
+					"Also, you can visualize information and observations* about the selected species. " +
+					"Create a user to be able to save and load your creations!";
 		let dialog = { title, message };
-		this.setState({dialog});
+		let extraContent = (<div>*Infromation taken from <a href="https://www.inaturalist.org/" target="_blank">iNaturalist</a>.</div>);
+		this.setState({dialog, extraContent});
 	}
 
 	resetMessageDialog = () => {
-		this.setState({ dialog: { title: '', message: '' } });
+		this.setState({ dialog: { title: '', message: '' }, extraContent: undefined });
 	}
 
 	render() {
@@ -47,7 +48,8 @@ export default class LoginBar extends Component {
 	          </div>
 	          { 
 	          	this.state.dialog.title !== '' 
-	          	? <GenericMessage title={ this.state.dialog.title } message={ this.state.dialog.message } remove={ this.resetMessageDialog }/>
+	          	? <GenericMessage title={ this.state.dialog.title } message={ this.state.dialog.message } 
+	          					  remove={ this.resetMessageDialog } extraContent={ this.state.extraContent }/>
 	          	: ''
 	          }
 	        </nav>

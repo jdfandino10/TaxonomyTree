@@ -69,6 +69,7 @@ export default class GenericMessage extends Component {
                 {this.props.showCancel ? <button ref={(cb) => { this.cancel_button = cb; }} className="btn options" onClick={this.cancel.bind(this)}>Cancel</button> : ''}
               </div>
             </div>
+            {this.props.extraContent ? this.props.extraContent : ''}
           </div>
         </div>
         <div className="modal-overlay" onClick={this.props.showCancel ? this.cancel.bind(this) : this.accept.bind(this)} />
