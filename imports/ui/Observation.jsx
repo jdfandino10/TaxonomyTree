@@ -17,7 +17,7 @@ export default class Observation extends Component {
 			return (
 				<div className="col-xs-12">
 					<h4>Observation Information:</h4>
-					<label>Date:</label> <b>{date ? date : 'N/A'} </b> <br/>
+					<label>Date:</label> {date ? date : 'N/A'} <br/>
 					<label>Description:</label> {notes ? notes : 'N/A'} <br/>
 					<label>Place Guess:</label> {place? place : 'N/A'}<br/>
 					<label>Image:</label>
