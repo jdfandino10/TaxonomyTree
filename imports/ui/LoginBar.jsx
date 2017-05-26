@@ -21,7 +21,8 @@ export default class LoginBar extends Component {
 					"Also, you can visualize information and observations* about the selected species. " +
 					"Create a user to be able to save and load your creations!";
 		let dialog = { title, message };
-		let extraContent = (<div>*Infromation taken from <a href="https://www.inaturalist.org/" target="_blank">iNaturalist</a>.</div>);
+		let extraContent = (<div>*Infromation taken from <a href="https://www.inaturalist.org/" target="_blank">iNaturalist</a>.
+			Taxonomy created with the help of the <a href="https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-of-Life-APIs" target="_blank">Open Tree of Life</a> project.</div>);
 		this.setState({dialog, extraContent});
 	}
 
