@@ -8,6 +8,8 @@ Visit the demo of the [application](https://taxonomytree.herokuapp.com/)
 
 Check out the [usability report](https://drive.google.com/open?id=1BXxIy_dGMimwClyeWOV6c-UI3dTZ8n0wdu6-I_Evybo)
 
+Look the app [presentation](https://www.canva.com/design/DACWnBpZSWo/7KD4g_BdIaGmNXWkvGtAbg/view?website)
+
 ## Development/Run
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/210f1bde68b54b0e948542d786aa6d5a)](https://www.codacy.com/app/dalthviz/TaxonomyTree?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jdfandino10/TaxonomyTree&amp;utm_campaign=Badge_Grade)
 [![CircleCI](https://circleci.com/gh/jdfandino10/TaxonomyTree/tree/master.svg?style=svg)](https://circleci.com/gh/jdfandino10/TaxonomyTree/tree/master)
